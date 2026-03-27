@@ -1,26 +1,83 @@
-from config import Config
+class Config:
+    def __init__(self, before, under, q):   
+        self.before = before
+        self.under = under
+        self.q = q
+
+    def __str__(self):
+        s= f"Before : \n"
+        for i in range(len(self.before)):
+            s += f"\t - {i} tape : \n"
+            for j in range(len(self.before[i])):
+                s+= f"\t \t - {self.before[i][j]} \n"
+        s+= f"After : \n"
+        for i in range(len(self.under)):
+            s += f"\t - {i} tape : \n"
+            for j in range(len(self.under[i])):
+                s+= f"\t \t - {self.under[i][j]} \n"
+        s+= f"State : {self.q}"
+        return s
 
 class TM:
     """
     TM for Turing Machine represents a Turing Machine code
     Computes for a given configuration the next step.s
     """
-    def __init__(self, name: str, nb_states: int, states: list, nb_tapes: int, transi_list: list):
+    def __init__(self, name: str, states: set, init: str, accept: str, nb_tapes: int, transitions: dict):
         self.name = name
-        self.nb_state = nb_states
         self.states = states
         self.nb_tapes = nb_tapes
-        self.transi_list = transi_list
+        self.transitions = transitions
+
+        if not (init in states and accept in states):
+            raise ValueError("Init and Accept states have to be valid states")
+        self.init = init
+        self.accept = accept
+
+    def get_nb_states(self):
+        return len(self.states)
 
     def __str__(self):
         s =f"Name : {self.name} \n"
-        s += f"Number of states : {self.nb_states} \n"
-        for i in range(len(self.states)):
-            s += f"\t - {self.states[i]}"
+        s += f"Number of states : {self.get_nb_states()} \n"
+        for state in self.states:
+            s += f"\t - {state}"
+            if state == self.init:
+                s += " (init)"
+            if state == self.accept:
+                s += " (accept)"
+            s += "\n"
         s += f"Number of tape.s : {self.nb_tapes} \n"
-        for i in range(len(self.transi_list)):
-            s+= f"\t - {self.transi_list[i]} \n"
+        for k,v in self.transitions.items():
+            s+= f"\t - {k} -> {v} \n"
         return s
+
+    def read(self, conf):
+        """
+        Args:
+            conf: Config
+        Return
+            (q, a1, a2, ...): tuple describing what is read
+        """
+        pass
+
+    def write(self, conf, symbols):
+        """
+        Args:
+            conf: Config
+            symbols: symbols to write into conf
+        Return
+            None since it modifies the configuration
+        """
+        pass
+
+    def move(self, conf, movements):
+        """
+        Args:
+            conf: Config
+            movements: direction in which to move each tape of the Config
+        """
+        pass
 
     def next_step(self, conf):
         """
@@ -41,10 +98,6 @@ class TM:
         """
         pass
 
-    @staticmethod
-    def load_from_file(filepath: str):
-        pass
-
     def create_init_config(self, input_):
         """
         Creates a Config using the input_, and gives it the good amount of tapes
@@ -53,5 +106,5 @@ class TM:
 
 
 if __name__ == '__main__':
-    tm = TM("toto", 1, [0], 3, [])
+    tm = TM("toto", [0], 3, [])
     print(tm)
