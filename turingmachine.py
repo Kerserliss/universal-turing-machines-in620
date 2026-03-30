@@ -59,7 +59,13 @@ class TM:
         Return
             (q, a1, a2, ...): tuple describing what is read
         """
-        pass
+        machine = []
+        for i in range(self.nb_tape) :
+            if (len(conf.under[i]) ) > 0 : 
+                machine.append(conf.under[i][0])
+            else : 
+                machine.append('_')
+        return tuple([conf.q] + machine) 
 
     def write(self, conf, symbols):
         """
@@ -69,7 +75,11 @@ class TM:
         Return
             None since it modifies the configuration
         """
-        pass
+        for i in range(self.nb_tapes):
+            if len(conf.under[i]) > 0 :
+                conf.under[i][0] = symbols[i]
+            else : 
+                conf.under[i].insert(0, symbols[i])
 
     def move(self, conf, movements):
         """
@@ -77,7 +87,7 @@ class TM:
             conf: Config
             movements: direction in which to move each tape of the Config
         """
-        pass
+        
 
     def next_step(self, conf):
         """
