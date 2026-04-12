@@ -60,7 +60,7 @@ class TM:
             (q, a1, a2, ...):  tuple describing what is read
         """
         machine = []
-        for i in range(self.nb_tape) :
+        for i in range(self.nb_tapes) :
             if (len(conf.under[i]) ) > 0 : 
                 machine.append(conf.under[i][0])
             else : 
