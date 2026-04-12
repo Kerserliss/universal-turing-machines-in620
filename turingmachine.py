@@ -7,12 +7,12 @@ class Config:
     def __str__(self):
         s= f"Before : \n"
         for i in range(len(self.before)):
-            s += f"\t - {i} tape : \n"
+            s += f"\t - {i} : \n"
             for j in range(len(self.before[i])):
                 s+= f"\t \t - {self.before[i][j]} \n"
         s+= f"After : \n"
         for i in range(len(self.under)):
-            s += f"\t - {i} tape : \n"
+            s += f"\t - {i} : \n"
             for j in range(len(self.under[i])):
                 s+= f"\t \t - {self.under[i][j]} \n"
         s+= f"State : {self.q}"
@@ -124,10 +124,7 @@ class TM:
         self.move(conf, movements)
         conf.q = new_state
 
-        return conf
-
-
-        
+        return conf 
 
     def run(self, conf):
         """
@@ -146,9 +143,16 @@ class TM:
         """
         Creates a Config using the input_, and gives it the good amount of tapes
         """
-        pass
+        before, under = [[] for _ in range(self.nb_tapes)], [[] for _ in range(self.nb_tapes)]
+
+        for l in input_:
+            under[0].append(l)
+
+        return Config(before,under,self.init)
+
 
 
 if __name__ == '__main__':
-    tm = TM("toto", [0], 3, [])
+    tm = TM("toto", {0, 1, 2, 3}, 0, 3, 2, dict())
     print(tm)
+    print(tm.create_init_config("toto"))
