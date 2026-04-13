@@ -5,14 +5,38 @@ class TestTM:
 	# TODO: test the Turing Machine class
 	@staticmethod
 	def runall():
+		print("Executing test on the Classic Turing Machine")
 		# TODO: executes all tests of this class
+		TestTM.create_init_config()
 		TestTM.read()
 		TestTM.write()
 		TestTM.move()
+		TestTM.next_step()
+
 
 	@staticmethod
-	def create_iniy_config():
-		pass
+	def create_init_config():
+		print("Testing creation of init config")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		TM_test2 = p.load_from_file("./files/test_2tapes.tm")
+
+		#Test with the first TM - One tape - Input '0'
+		config_init1_test = TM_test1.create_init_config('0')
+		assert len(config_init1_test.before) == 1
+		assert len(config_init1_test.before[0]) == 0
+		assert len(config_init1_test.under) == 1
+		assert len(config_init1_test.under[0]) == 1 and config_init1_test.under[0] == ['0']
+		assert config_init1_test.q == TM_test1.init
+
+		#Test with the second TM - Two tapes - Input '0'
+		config_init2_test = TM_test2.create_init_config('0')
+		assert len(config_init2_test.before) == 2
+		assert len(config_init2_test.before[0]) == 0
+		assert len(config_init2_test.before[1]) == 0
+		assert len(config_init2_test.under) == 2
+		assert len(config_init2_test.under[0]) == 1 and config_init2_test.under[0] == ['0']
+		assert len(config_init2_test.under[1]) == 0
+		assert config_init2_test.q == TM_test2.init
 
 	@staticmethod
 	def read():
@@ -106,8 +130,25 @@ class TestTM:
 		print("Testing Complete")
 
 	@staticmethod
-	def next_move():
-		pass
+	def next_step():
+		print("Testing Next Move")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		TM_test2 = p.load_from_file("./files/test_2tapes.tm")
+
+		#Test with the first TM - One tape - Input '000'
+		config_init1 = TM_test1.create_init_config('000')
+		config_init1 = TM_test1.next_step(config_init1)
+		assert config_init1.q == 'q0' and config_init1.before[0][0] == '0'
+		assert config_init1.under[0][0] == '0' and config_init1.under[0][1] == '0'
+
+		#Test with the first TM - One tape - Input '000'
+		config_init2 = TM_test2.create_init_config('000')
+		config_init2 = TM_test2.next_step(config_init2)
+
+		assert config_init2.q == 'q0' and config_init2.before[1][0] == '0'
+		assert config_init2.under[0][0] == '0' and config_init2.under[0][1] == '0'
+
+		print("Testing Complete")
 
 
 class TestUniversalTM:
