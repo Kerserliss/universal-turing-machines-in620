@@ -106,6 +106,9 @@ class TM:
         """
         Given a Config, returns the new Config following the machine rules
         """
+        #si on arrive dans un état accept ou reject on execute pas le prochain état 
+        #pour représenter un état reject on choisit -1 
+        
         if conf.q == self.accept:
             return conf
 
@@ -115,17 +118,16 @@ class TM:
             raise ValueError(f"Pas de transition pour {key}")
 
         transition = self.transitions[key]
-        new_state = transition[0]
-        rest = transition[1:]
+        
+        new_state   = transition[0]   
+        new_symbols = transition[1]   
+        movements   = transition[2]   
 
-        new_symbols = list(rest[:self.nb_tapes])
-        movements   = list(rest[self.nb_tapes:])
         self.write(conf, new_symbols)
         self.move(conf, movements)
         conf.q = new_state
 
-        return conf 
-
+        return conf
     def run(self, conf):
         """
         Given a Config, computes all Config until end of program (q = 1) and returns the last Config
