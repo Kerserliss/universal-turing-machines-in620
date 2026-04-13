@@ -128,7 +128,8 @@ class TM:
         key = self.read(conf)
 
         if key not in self.transitions:
-            raise ValueError(f"Pas de transition pour {key}")
+            conf.q = -1
+            return conf
 
         transition = self.transitions[key]
         
