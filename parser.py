@@ -61,7 +61,7 @@ def load_from_file(filepath: str) -> TM:
 
 
 if __name__ == '__main__':
-	x=load_from_file("./files/test_1tape.tm")
+	x=load_from_file("./files/test_2tapes.tm")
 	print(x)
 
 	c = x.create_init_config("1001010100")
