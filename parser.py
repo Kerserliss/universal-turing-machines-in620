@@ -1,5 +1,5 @@
 import re
-from turingmachine import TM
+from turingmachine import TM, Config
 import os
 
 
@@ -142,7 +142,7 @@ def MU(filepath):
 	return machine_final
 
 #test marche pas mon pc reconait pas la classe Config jsp pk
-#print(MU("test_1tape.tm"))
+print(MU("test_1tape.tm"))
 
 def encode_binary(filepath):
 	"""Function that produces the binary coding of the mt simulator file 
