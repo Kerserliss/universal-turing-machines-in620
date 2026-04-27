@@ -58,7 +58,7 @@ def load_from_file(filepath: str) -> TM:
 		transitions[read] = write
 
 	return TM(name,states,init,accept,number_tapes,transitions)
-	
+
 if __name__ == '__main__':
 	x=load_from_file("./files/test_2tapes.tm")
 	print(x)
@@ -74,7 +74,7 @@ def conversion_binaire(number):
 	if number == 0:
 		return '0'
 	
-	while number//2 != 0 :
+	while number//2 > 0 :
 		reste.append(number%2)
 		number = number//2
 	reste.reverse()
@@ -104,13 +104,14 @@ def conversion_binaire_alphabet(symbol):
 	return conversion_binaire(ord(symbol))
 
 def encode_alphabet(machine):
-	alphabet = []
+	alphabet = set()
 
 	for key,value in machine.transitions.items():
-		alphabet.append(key[0])
-		alphabet.append(value[0])
+		alphabet.add(key[1])
+		alphabet.add(value[1][0])
 
 	alphabet_bis = {}
+
 	for symbol in alphabet :
 		alphabet_bis[symbol] = conversion_binaire_alphabet(symbol)
 	return alphabet_bis
@@ -142,7 +143,7 @@ def MU(filepath):
 	return machine_final
 
 
-print(MU("./files/test_1tape.tm"))
+#print(MU("./files/test_1tape.tm"))
 
 def encode_binary(filepath):
 	"""Function that produces the binary coding of the mt simulator file 
@@ -153,10 +154,11 @@ def encode_binary(filepath):
 
 	for symbol in machine_final : 
 		encoding.append(conversion_binaire(ord(symbol)))
-	"".join(encoding)
+		
+	encoding = "".join(encoding)
 
 	integer = int(encoding, 2)
 
 	return encoding, integer
 
-
+print(encode_binary("./files/test_1tape.tm"))
