@@ -1,5 +1,5 @@
 class Config:
-    def __init__(self, before: list, under: list, q: str|int) -> Config:
+    def __init__(self, before: list, under: list, q: str|int):
         """
         Config class holds the current state of the machine
         Args:
@@ -15,18 +15,18 @@ class Config:
         s = f"State: {self.q if type(self.q) is str else 'REJECT'}\n"
 
         for i in range(len(self.before)):
-            s += f"[{i}]\t"+" "*(len(self.before[i]) or 3) + "v" + " "*((len(self.under[i]) - 1) > 0 or 3) + "\n"
+            s += f"[{i}]\t"+" "*(len(self.before[i]) or 1) + "v" + " "*((len(self.under[i]) - 1) > 0 or 1) + "\n"
             if len(self.before[i]) > 0:
                 s += f"\t{''.join(self.before[i])}"
             else:
-                s += "\t" + "_" * 3
+                s += "\t" + "_"
 
             if len(self.under[i]) > 1:
                 s += f"{''.join(self.under[i])}\n"
             elif len(self.under[i]) == 1:
-                s += f"{self.under[i][0]}" + "_" * 3 + "\n"
+                s += f"{self.under[i][0]}" + "_" + "\n"
             else:
-                s += "" + "_" * 3 + "\n"
+                s += "" + "_" + "\n"
             s += "\n"
         return s
 
@@ -35,7 +35,7 @@ class TM:
     TM for Turing Machine represents a Turing Machine code
     Computes for a given configuration the next step.s
     """
-    def __init__(self, name: str, states: set, init: str, accept: str, nb_tapes: int, transitions: dict) -> TM:
+    def __init__(self, name: str, states: set, init: str, accept: str, nb_tapes: int, transitions: dict):
         self.name = name
         self.states = states
         self.nb_tapes = nb_tapes
