@@ -66,7 +66,7 @@ if __name__ == '__main__':
 	c = x.create_init_config("1001010100")
 	print(x.next_step(c))
 
-ALPHABET = {'0' :0, '1' : 1, '.' : 2}
+ALPHABET = {'0' :0, '1' : 1, '_' : 2}
 def binary_conversion(number, nb_bits):
 	"""Function that ables to convert decimal numbers in binary numbers
 	Parameter : number which represents the decimal number"""
@@ -142,7 +142,7 @@ def encode_transition(machine, state_bits = 8, alphabet_bits = 8):
 		symbol_read = alphabet_machine[key[1]]
 		new_state = states[value[0]]
 		symbol_written = alphabet_machine[value[1][0]]
-		movement = encode_movement(value[2][0], alphabet_bits)
+		movement = value[2][0]
 
 		t_transitions.append(current_state + "|" + symbol_read + "|" + new_state + "|" + symbol_written + "|" + movement)
 
@@ -158,18 +158,22 @@ def universal_machine(filepath, state_bits = 8, alphabet_bits = 8):
 	return machine_final
 
 
-#print(MU("./files/test_1tape.tm"))
+#print(universal_machine("./files/test_1tape.tm"))
 
-def encode_binary(filepath, nb_bits = 8):
+def encode_binary(filepath, state_bits= 8, alphabet_bits = 8):
 	"""Function that produces the binary coding of the mt simulator file 
 	Parameter : filepath"""
-	machine_final = universal_machine(filepath)
+	machine_final = universal_machine(filepath, state_bits, alphabet_bits )
 
-	encoding = []
+	elements = machine_final.split("|")
 
-	for symbol in machine_final : 
-		encoding.append(binary_conversion(ord(symbol), nb_bits))
-
+	encoding =[]
+	for element in elements : 
+		if element in MOVEMENTS : 
+			encoding.append(encode_movement(element, alphabet_bits))
+		else: 
+			encoding.append(element)
+			
 	encoding = "".join(encoding)
 	integer = int(encoding, 2)
 
