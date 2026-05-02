@@ -1,5 +1,5 @@
 import re
-from turingmachine import TM, Config
+from turingmachine import TM, Config, UTM
 import os
 
 
@@ -17,59 +17,61 @@ ACCEPT_R = rf"^accept: ({STATE_R})$"
 # Finds every groups of read + transition
 BLOCK_R = rf"^({STATE_R}),((?:{ALPHA_R})+)\n({STATE_R}),((?:{ALPHA_R})+)$"
 
-def load_from_file(filepath: str) -> TM:
+def load_from_file(filepath: str) -> TM|UTM:
 	if not (os.path.isfile(filepath) and os.path.splitext(filepath)[-1] in (".tm", ".utm")):
 		raise ValueError(f"{filepath} is not a valid path or is not a recognized extension")
 
 	with open(filepath, 'r') as f:
 		content = f.read()
 
-	name = re.search(NAME_R, content, re.MULTILINE)
-	name = name.group(1) if name else "N/A"
+	match filepath.split(".")[-1]:
+		case "tm":
+			name = re.search(NAME_R, content, re.MULTILINE)
+			name = name.group(1) if name else "N/A"
 
-	init = re.search(INIT_R, content, re.MULTILINE)
-	accept = re.search(ACCEPT_R, content, re.MULTILINE)
+			init = re.search(INIT_R, content, re.MULTILINE)
+			accept = re.search(ACCEPT_R, content, re.MULTILINE)
 
-	if not init or not accept:
-		raise ValueError("Provided file is invalid, does not contain init and/or accept states description")
+			if not init or not accept:
+				raise ValueError("Provided file is invalid, does not contain init and/or accept states description")
 
-	init = init.group(1)
-	accept = accept.group(1)
+			init = init.group(1)
+			accept = accept.group(1)
 
-	blocks = re.findall(BLOCK_R, content, re.MULTILINE)
+			blocks = re.findall(BLOCK_R, content, re.MULTILINE)
 
-	# the 2nd group of the first match defines the number of tapes for the rest of the load
-	number_tapes = len(blocks[0][1].split(",")) 
+			# the 2nd group of the first match defines the number of tapes for the rest of the load
+			number_tapes = len(blocks[0][1].split(",")) 
 
-	# defines a lambda to check quickly if any block is invalid
-	_check_block = lambda b: True if (len(b[1].split(","))==number_tapes and len(b[3].split(","))==2*number_tapes) else False
+			# defines a lambda to check quickly if any block is invalid
+			_check_block = lambda b: True if (len(b[1].split(","))==number_tapes and len(b[3].split(","))==2*number_tapes) else False
 
-	states = set()
-	transitions = dict()
-	for block in blocks:
-		if not _check_block(block):
-			raise ValueError(f"Number of tapes is not consistent ! ({ block = })")
+			states = set()
+			transitions = dict()
+			for block in blocks:
+				if not _check_block(block):
+					raise ValueError(f"Number of tapes is not consistent ! ({ block = })")
 
-		states.add(block[0])
-		states.add(block[2])
-		read = tuple([block[0],] + block[1].split(","))
-		write = tuple([block[2],] + [block[3].split(",")[:number_tapes],] + [block[3].split(",")[number_tapes:]])
-		
-		transitions[read] = write
+				states.add(block[0])
+				states.add(block[2])
+				read = tuple([block[0],] + block[1].split(","))
+				write = tuple([block[2],] + [block[3].split(",")[:number_tapes],] + [block[3].split(",")[number_tapes:]])
+				
+				transitions[read] = write
 
-	return TM(name,states,init,accept,number_tapes,transitions)
-
-if __name__ == '__main__':
-	x=load_from_file("./files/test_2tapes.tm")
-	print(x)
-
-	c = x.create_init_config("1001010100")
-	print(x.next_step(c))
+			return TM(name,states,init,accept,number_tapes,transitions)
+		case "utm":
+			pass
 
 ALPHABET = {'0' :0, '1' : 1, '_' : 2}
+MOVEMENTS = {'<' : 0, '-' : 1, '>':3 }
+
 def binary_conversion(number, nb_bits):
-	"""Function that ables to convert decimal numbers in binary numbers
-	Parameter : number which represents the decimal number"""
+	"""Function that converts decimal numbers in binary numbers
+	Parameters : 
+		number: represents the decimal number
+		nb_bits: number of bits the number should take as bin
+	"""
 	
 	binary = bin(number)[2:]
 	if len(binary) > nb_bits : 
@@ -82,9 +84,9 @@ def rename_states(machine, nb_bits = 8) :
 	We force the naming of the initial state and the accept state to 0 and 1 each
 	Parameters : machine which represents the turing machine we want to convert
 	"""
-	max_states = 2 **nb_bits
+	max_states = 2**nb_bits
 	if len(machine.states) > max_states :
-		raise ValueError(f"Too many states ({len(machine.states)}) for {nb_bits} bits (max{max_states})")
+		raise ValueError(f"Too many states ({len(machine.states)}) for {nb_bits} bits (max {max_states})")
 	
 	dico_states = {}
 	dico_states[machine.init] = binary_conversion(0, nb_bits)
@@ -99,12 +101,12 @@ def rename_states(machine, nb_bits = 8) :
 	
 	return(dico_states)
 
-def symbol_to_bin(symbol, nb_bits = 8):
+def symbol_to_bin(symbol, nb_bits = 2):
 	if symbol not in ALPHABET : 
 		raise ValueError(f"Symbol {symbol} not in fixed alphabet {set(ALPHABET.keys())}")
-	return binary_conversion(ord(symbol), nb_bits)
+	return binary_conversion(ALPHABET[symbol], nb_bits)
 
-def encode_alphabet(machine, nb_bits = 8):
+def encode_alphabet(machine, nb_bits = 2):
 	alphabet = set()
 
 	for key,value in machine.transitions.items():
@@ -121,15 +123,13 @@ def encode_alphabet(machine, nb_bits = 8):
 		alphabet_bis[symbol] = symbol_to_bin(symbol, nb_bits)
 	return alphabet_bis
 
-MOVEMENTS = {'>' : 0, '-' : 1, '<':2 }
-
-def encode_movement(movement, nb_bits = 8):
+def encode_movement(movement, nb_bits = 2):
 	if movement not in MOVEMENTS:
-		raise ValueError(f"Uknown movement :{movement}")
+		raise ValueError(f"Unknown movement :{movement}")
 	return binary_conversion(MOVEMENTS[movement], nb_bits)
 
 
-def encode_transition(machine, state_bits = 8, alphabet_bits = 8):
+def encode_transitions(machine, state_bits = 8, alphabet_bits = 2):
 	"""Transforms the syntax of the MT transitions into the syntax wanted
 	Parameter : MT"""
 
@@ -148,19 +148,21 @@ def encode_transition(machine, state_bits = 8, alphabet_bits = 8):
 
 	return "|".join(t_transitions)
 
-def universal_machine(filepath, state_bits = 8, alphabet_bits = 8):
+def universal_machine(filepath, state_bits = 8, alphabet_bits = 2):
 	"""Final function to determine a universal machine 
 	Parameter : filepath"""
 
 	machine = load_from_file(filepath)
-	machine_final = encode_transition(machine, state_bits, alphabet_bits)
+	print(machine)
+	machine_final = encode_transitions(machine, state_bits, alphabet_bits)
+	print(machine_final)
 	
 	return machine_final
 
 
 #print(universal_machine("./files/test_1tape.tm"))
 
-def encode_binary(filepath, state_bits= 8, alphabet_bits = 8):
+def encode_binary(filepath, state_bits= 8, alphabet_bits = 2):
 	"""Function that produces the binary coding of the mt simulator file 
 	Parameter : filepath"""
 	machine_final = universal_machine(filepath, state_bits, alphabet_bits )
@@ -174,7 +176,7 @@ def encode_binary(filepath, state_bits= 8, alphabet_bits = 8):
 		else: 
 			encoding.append(element)
 			
-	encoding = "".join(encoding)
+	encoding = "1" + "".join(encoding)
 	integer = int(encoding, 2)
 
 	utm_path = filepath.replace('.tm', '.utm')

@@ -1,3 +1,6 @@
+import os
+from parser import load_from_file
+
 class Config:
     def __init__(self, before: list, under: list, q: str|int):
         """
@@ -151,22 +154,22 @@ class TM:
             self.next_step(conf)
         return conf
     
-    def run_start(self, input : str) -> Config:
+    def run_start(self, input_ : str) -> Config:
         """
         Given an input, computes all Config until end of program (q = 1) and returns the last Config
         """
-        config_init = self.create_init_config(input)
+        config_init = self.create_init_config(input_)
         while config_init.q != self.accept and config_init.q !=-1:
             self.next_step(config_init)
         return config_init
 
-    def run_print_start(self, input : str) -> Config:
+    def run_print_start(self, input_ : str) -> Config:
         """
         Given an input, computes all Config until end of program (q = 1) and returns the last Config
         Also prints out in a pretty manner how it works
         """
         print(f"Running with TM : {self.name}")
-        conf = self.create_init_config(input)
+        conf = self.create_init_config(input_)
         step = 0
         while conf.q != self.accept and conf.q != -1:
             tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
@@ -213,6 +216,23 @@ class TM:
             under[0].append(l)
 
         return Config(before,under,self.init)
+
+class UTM:
+    def __init__(self, states_size = 4, alphabet_size = 2, folder="./files/"):
+        self.name = folder + f"utm_states{states_size}_alpha{alphabet_size}.tm"
+
+        if not os.path.isfile(self.name):
+            raise ValueError(f"{self.name} code doesnt exist in the specified folder !")
+
+        self.machine = load_from_file(self.name)
+
+    def run_code(self, code, input_):
+        return self.machine.run_start(f"{code}#{input_}")
+
+    def run_code_print(self, code, input_)
+        return self.machine.run_print_start(f"{code}#{input_}")
+
+
 
 if __name__ == '__main__':
     tm = TM("toto", {0, 1, 2, 3}, 0, 3, 2, dict())
