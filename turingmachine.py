@@ -146,11 +146,25 @@ class TM:
     def run(self, conf: Config) -> Config:
         """
         Given a Config, computes all Config until end of program (q = 1) and returns the last Config
+        Parameters :
+            conf : A configuration of where to start the run.
         """
         while conf.q != self.accept and conf.q !=-1:
             self.next_step(conf)
         return conf
-    
+
+    def run_count(self,conf :Config, nb_max : int, v : bool = False) -> Config:
+        """
+        Given a Config, computes all Config until end of program (q = 1) or until the maximun number of transition is reached and returns the last Config
+        """
+        count = 0
+        while (conf.q != self.accept and conf.q !=-1) and count < nb_max:
+            self.next_step(conf)
+            count += 1
+        if count == nb_max and v :
+            print("The maximun number of transition have been reach.")
+        return conf,count
+
     def run_start(self, input : str) -> Config:
         """
         Given an input, computes all Config until end of program (q = 1) and returns the last Config

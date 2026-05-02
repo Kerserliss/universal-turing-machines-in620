@@ -13,6 +13,8 @@ class TestTM:
 		TestTM.move()
 		TestTM.next_step()
 		TestTM.run()
+		TestTM.run_start()
+		TestTM.run_count()
 
 
 	@staticmethod
@@ -165,6 +167,38 @@ class TestTM:
 		config_init2 = TM_test2.create_init_config('0000')
 		config_test2 = TM_test2.run(config_init2)
 		assert config_test2.q == TM_test2.accept and config_test2.under[0][0] == '_' and config_test2.under[1][0] == '_'
+		print("Testing Complete")
+
+	@staticmethod
+	def run_start():
+		print("Testing Run from start")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		TM_test2 = p.load_from_file("./files/test_2tapes.tm")
+
+		#Test with the first TM - One tape - Input '000'
+		config_test1 = TM_test1.run_start('000')
+		assert config_test1.q == TM_test1.accept and config_test1.under[0][0] == '_'
+
+		#Test with the second TM - Two tapes - Input '000'
+		config_test2 = TM_test2.run_start('0000')
+		assert config_test2.q == TM_test2.accept and config_test2.under[0][0] == '_' and config_test2.under[1][0] == '_'
+		print("Testing Complete")
+
+	@staticmethod
+	def run_count():
+		print("Testing Run Count")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		
+		#Test with the first TM - One tape - Input '000'
+		config_init1 = TM_test1.create_init_config('000')
+		config_test1,count_test1 = TM_test1.run_count(config_init1,100)
+		assert config_test1.q == TM_test1.accept and config_test1.under[0][0] == '_' and count_test1 > 0
+
+		config_init1 = TM_test1.create_init_config('000')
+		config_test1,count_test1 = TM_test1.run_count(config_init1,1)
+
+		assert config_test1.q == 'q0' and config_test1.under[0][0] == '0' and count_test1 == 1
+
 		print("Testing Complete")
 
 
