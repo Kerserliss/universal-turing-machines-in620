@@ -1,6 +1,6 @@
 //Syntax:
 
-name: Unaire Multiplication
+name: Unary Multiplication
 init: q0
 accept: qAccept
 

@@ -148,10 +148,24 @@ class TM:
     def run(self, conf: Config) -> Config:
         """
         Given a Config, computes all Config until end of program (q = 1) and returns the last Config
+        Parameters :
+            conf : A configuration of where to start the run.
         """
         while conf.q != self.accept and conf.q !=-1:
             self.next_step(conf)
         return conf
+
+    def run_count(self,conf :Config, nb_max : int, v : bool = False) -> Config:
+        """
+        Given a Config, computes all Config until end of program (q = 1) or until the maximun number of transition is reached and returns the last Config
+        """
+        count = 0
+        while (conf.q != self.accept and conf.q !=-1) and count < nb_max:
+            self.next_step(conf)
+            count += 1
+        if count == nb_max and v :
+            print("The maximun number of transition have been reach.")
+        return conf,count
     
     def run_start(self, input_ : str) -> Config:
         """
@@ -171,13 +185,12 @@ class TM:
         conf = self.create_init_config(input_)
         step = 0
         while conf.q != self.accept and conf.q != -1:
-            tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-            string = f"Step = {step} : {tuple_print}"
-            print(string)
+            print(f"Step : {step}")
+            print(conf)
             self.next_step(conf)
             step += 1
-        tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-        print(f"Final Configuration : {tuple_print}",end="")
+        print("Final Configuration :")
+        print(conf)
         if conf.q == self.accept :
             print(" Accept")
         else :
@@ -192,13 +205,12 @@ class TM:
         print(f"Running with TM : {self.name}")
         step = 0
         while conf.q != self.accept and conf.q != -1:
-            tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-            string = f"Step = {step} : {tuple_print}"
-            print(string)
+            print(f"Step : {step}")
+            print(conf)
             self.next_step(conf)
             step += 1
-        tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-        print(f"Final Configuration : {tuple_print}",end="")
+        print("Final Configuration :")
+        print(conf)
         if conf.q == self.accept :
             print(" Accept")
         else :
