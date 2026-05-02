@@ -81,7 +81,6 @@ qL,0,1,>,>
 qL,1,0
 qG,1,0,>,>
 
-// fin → x < y → ACCEPTER
 qL,_,_
 qF,_,_,-,-
 
@@ -91,10 +90,6 @@ qF,_,0,-,-
 qL,_,1
 qF,_,1,-,-
 
-// =====================
-// qG : on a vu x > y sur un bit, continuer
-// Si on atteint la fin → x > y → BOUCLE
-// =====================
 qG,0,0
 qG,0,0,>,>
 
@@ -107,7 +102,7 @@ qL,0,1,>,>
 qG,1,0
 qG,1,0,>,>
 
-// fin → x > y → BOUCLE
+// end : x > y we loop
 qG,_,_
 qLoop,_,_,-,-
 
@@ -117,9 +112,6 @@ qLoop,_,0,-,-
 qG,_,1
 qLoop,_,1,-,-
 
-// =====================
-// qLoop : boucle infinie
-// =====================
 qLoop,1,1
 qLoop,1,1,>,>
 
