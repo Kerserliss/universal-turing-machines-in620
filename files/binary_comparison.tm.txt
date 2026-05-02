@@ -59,7 +59,7 @@ qL,0,1,<,<
 q3,1,0
 qG,1,0,<,<
 
-// x smaller than y : x < y → ACCEPT
+// x smaller than y : x < y : ACCEPT
 q3,_,0
 qF,_,0,-,-
 
