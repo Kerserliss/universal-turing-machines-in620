@@ -185,13 +185,12 @@ class TM:
         conf = self.create_init_config(input_)
         step = 0
         while conf.q != self.accept and conf.q != -1:
-            tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-            string = f"Step = {step} : {tuple_print}"
-            print(string)
+            print(f"Step : {step}")
+            print(conf)
             self.next_step(conf)
             step += 1
-        tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-        print(f"Final Configuration : {tuple_print}",end="")
+        print("Final Configuration :")
+        print(conf)
         if conf.q == self.accept :
             print(" Accept")
         else :
@@ -206,13 +205,12 @@ class TM:
         print(f"Running with TM : {self.name}")
         step = 0
         while conf.q != self.accept and conf.q != -1:
-            tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-            string = f"Step = {step} : {tuple_print}"
-            print(string)
+            print(f"Step : {step}")
+            print(conf)
             self.next_step(conf)
             step += 1
-        tuple_print = (*[''.join(conf.before[i]) for i in range(self.nb_tapes)],*[''.join(conf.under[i]) for i in range(self.nb_tapes)],conf.q)
-        print(f"Final Configuration : {tuple_print}",end="")
+        print("Final Configuration :")
+        print(conf)
         if conf.q == self.accept :
             print(" Accept")
         else :

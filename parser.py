@@ -1,6 +1,6 @@
 import re
 from turingmachine import TM, Config
-from universal_machine import UTM
+from universalturingmachine import UTM
 import os
 
 
