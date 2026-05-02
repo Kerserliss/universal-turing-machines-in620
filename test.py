@@ -13,6 +13,11 @@ class TestTM:
 		TestTM.move()
 		TestTM.next_step()
 		TestTM.run()
+		TestTM.run_start()
+		TestTM.run_count()
+		TestTM.binary_comparison()
+		TestTM.linearsearch()
+		TestTM.unarymultiplication()
 
 
 	@staticmethod
@@ -167,6 +172,86 @@ class TestTM:
 		assert config_test2.q == TM_test2.accept and config_test2.under[0][0] == '_' and config_test2.under[1][0] == '_'
 		print("Testing Complete")
 
+	@staticmethod
+	def run_start():
+		print("Testing Run from start")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		TM_test2 = p.load_from_file("./files/test_2tapes.tm")
+
+		#Test with the first TM - One tape - Input '000'
+		config_test1 = TM_test1.run_start('000')
+		assert config_test1.q == TM_test1.accept and config_test1.under[0][0] == '_'
+
+		#Test with the second TM - Two tapes - Input '000'
+		config_test2 = TM_test2.run_start('0000')
+		assert config_test2.q == TM_test2.accept and config_test2.under[0][0] == '_' and config_test2.under[1][0] == '_'
+		print("Testing Complete")
+
+	@staticmethod
+	def run_count():
+		print("Testing Run Count")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		
+		#Test with the first TM - One tape - Input '000'
+		config_init1 = TM_test1.create_init_config('000')
+		config_test1,count_test1 = TM_test1.run_count(config_init1,100)
+		assert config_test1.q == TM_test1.accept and config_test1.under[0][0] == '_' and count_test1 > 0
+
+		config_init1 = TM_test1.create_init_config('000')
+		config_test1,count_test1 = TM_test1.run_count(config_init1,1)
+
+		assert config_test1.q == 'q0' and config_test1.under[0][0] == '0' and count_test1 == 1
+
+		print("Testing Complete")
+
+	@staticmethod
+	def binary_comparison():
+		print("Testing Turing Machine Binary Comparison.")
+		bin_compararison_TM = p.load_from_file("./files/binary_comparison.tm")
+
+		#Testing with a good input - 100#110
+		config_test1 = bin_compararison_TM.run_start("100#110")
+		print(config_test1)
+		assert config_test1.q == bin_compararison_TM.accept 
+
+		#Testing with a bad input - 11#10
+		config_init2 = bin_compararison_TM.create_init_config("11#10")
+		config_test2,count = bin_compararison_TM.run_count(config_init2,50)
+
+		assert config_test2.q != bin_compararison_TM.accept and count == 50
+		print("Testing Complete.")
+	
+	@staticmethod
+	def linearsearch():
+		print("Testing Turing Machine Linear Search.")
+		linearsearch_TM = p.load_from_file("./files/linearsearch.tm")
+
+		#Testing with a good input - 10#110#10#11#00#1
+		config_test1 = linearsearch_TM.run_start("10#110#10#11#00#1")
+		assert config_test1.q == linearsearch_TM.accept 
+
+		#Testing with a bad input - 10#110#00#11#00#1
+		config_init2 = linearsearch_TM.create_init_config("10#110#00#11#00#1")
+		config_test2,count = linearsearch_TM.run_count(config_init2,100)
+
+		assert config_test2.q != linearsearch_TM.accept and count == 100
+		print("Testing Compplete.")
+
+	@staticmethod
+	def unarymultiplication():
+		print("Testing Turing Machine Unary Multiplicationh.")
+		unarymultiplication_TM = p.load_from_file("./files/unarymultiplication.tm")
+
+		#Testing with a good input - 11#111
+		config_test1 = unarymultiplication_TM.run_start("11#111")
+		assert config_test1.q == unarymultiplication_TM.accept and len(config_test1.before[2]) == 6 
+
+		#Testing with bad input - 10#11
+		config_test2 = unarymultiplication_TM.run_start("10#11")
+
+		assert config_test2.q ==  -1
+		print("Testing Compplete.")
+
 
 
 class TestUniversalTM:
@@ -182,4 +267,7 @@ class TestUniversalCounterTM:
 	def runall():
 		# TODO: executes all tests of this class
 		pass
-
+if __name__ == '__main__':
+	TestTM.runall()
+	#tm_test = p.load_from_file("./files/linearsearch.tm")
+	#tm_test.run_print_start('1#01#10#00#1')
