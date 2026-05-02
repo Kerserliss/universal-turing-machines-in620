@@ -1,5 +1,4 @@
 import os
-from parser import load_from_file
 
 class Config:
     def __init__(self, before: list, under: list, q: str|int):
@@ -216,21 +215,6 @@ class TM:
             under[0].append(l)
 
         return Config(before,under,self.init)
-
-class UTM:
-    def __init__(self, states_size = 4, alphabet_size = 2, folder="./files/"):
-        self.name = folder + f"utm_states{states_size}_alpha{alphabet_size}.tm"
-
-        if not os.path.isfile(self.name):
-            raise ValueError(f"{self.name} code doesnt exist in the specified folder !")
-
-        self.machine = load_from_file(self.name)
-
-    def run_code(self, code, input_):
-        return self.machine.run_start(f"{code}#{input_}")
-
-    def run_code_print(self, code, input_)
-        return self.machine.run_print_start(f"{code}#{input_}")
 
 
 

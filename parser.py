@@ -1,5 +1,5 @@
 import re
-from turingmachine import TM, Config, UTM
+from turingmachine import TM, Config
 import os
 
 
@@ -17,7 +17,7 @@ ACCEPT_R = rf"^accept: ({STATE_R})$"
 # Finds every groups of read + transition
 BLOCK_R = rf"^({STATE_R}),((?:{ALPHA_R})+)\n({STATE_R}),((?:{ALPHA_R})+)$"
 
-def load_from_file(filepath: str) -> TM|UTM:
+def load_from_file(filepath: str) -> TM:
 	if not (os.path.isfile(filepath) and os.path.splitext(filepath)[-1] in (".tm", ".utm")):
 		raise ValueError(f"{filepath} is not a valid path or is not a recognized extension")
 
@@ -63,7 +63,9 @@ def load_from_file(filepath: str) -> TM|UTM:
 		case "utm":
 			pass
 
-ALPHABET = {'0' :0, '1' : 1, '_' : 2}
+# WARNING ! _ should always be 3 !!!
+ALPHABET = {'0' :0, '1' : 1, '_' : 3, '#' : 2}
+
 MOVEMENTS = {'<' : 0, '-' : 1, '>':3 }
 
 def binary_conversion(number, nb_bits):
@@ -185,4 +187,4 @@ def encode_binary(filepath, state_bits= 8, alphabet_bits = 2):
 
 	return encoding, integer
 
-print(encode_binary("./files/test_1tape.tm"))
+print(encode_binary("./files/onlineturingmachinesimulator/binarypalindrome.tm", state_bits=4))
