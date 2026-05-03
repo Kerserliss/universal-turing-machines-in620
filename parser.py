@@ -159,7 +159,7 @@ def encode_transitions(machine, state_bits = 4, alphabet_bits = 2):
 
 	return "|".join(t_transitions)
 
-def universal_machine(filepath, state_bits = 8, alphabet_bits = 2):
+def universal_machine(filepath, state_bits = 4, alphabet_bits = 2):
 	"""Final function to determine a universal machine 
 	Parameter : filepath"""
 
@@ -169,7 +169,7 @@ def universal_machine(filepath, state_bits = 8, alphabet_bits = 2):
 	return machine_final
 
 
-def encode_binary(filepath, state_bits= 8, alpha_bits = 2):
+def encode_binary(filepath, state_bits= 4, alpha_bits = 2):
 	"""Function that produces the binary coding of the mt simulator file 
 	Parameter : filepath"""
 	machine_final = universal_machine(filepath, state_bits, alpha_bits )
