@@ -243,40 +243,40 @@ gotocurrstart,1,1,0,1,-,<,-,-
 
 // end conditions of gotocurrstart
 gotocurrstart,0,_,0,1
-substract_one,0,_,0,1,-,-,-,-
+substractone,0,_,0,1,-,-,-,-
 
 gotocurrstart,0,_,1,1
-substract_one,0,_,1,1,-,-,-,-
+substractone,0,_,1,1,-,-,-,-
 
 gotocurrstart,0,_,_,1
-substract_one,0,_,_,1,-,-,-,-
+substractone,0,_,_,1,-,-,-,-
 
 gotocurrstart,1,_,0,1
-substract_one,1,_,0,1,-,-,-,-
+substractone,1,_,0,1,-,-,-,-
 
 gotocurrstart,1,_,1,1
-substract_one,1,_,1,1,-,-,-,-
+substractone,1,_,1,1,-,-,-,-
 
 gotocurrstart,1,_,_,1
-substract_one,1,_,_,1,-,-,-,-
+substractone,1,_,_,1,-,-,-,-
 
 
-substract_one,0,_,0,1
+substractone,0,_,0,1
 writecurrstate,0,_,0,_,-,>,-,<
 
-substract_one,0,_,1,1
+substractone,0,_,1,1
 writecurrstate,0,_,1,_,-,>,-,<
 
-substract_one,0,_,_,1
+substractone,0,_,_,1
 writecurrstate,0,_,_,_,-,>,-,<
 
-substract_one,1,_,0,1
+substractone,1,_,0,1
 writecurrstate,1,_,0,_,-,>,-,<
 
-substract_one,1,_,1,1
+substractone,1,_,1,1
 writecurrstate,1,_,1,_,-,>,-,<
 
-substract_one,1,_,_,1
+substractone,1,_,_,1
 writecurrstate,1,_,_,_,-,>,-,<
 
 
