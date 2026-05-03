@@ -7,6 +7,7 @@ import os
 import sys
 from test import *
 from parser import load_from_file, encode_binary
+from universalturingmachine import convert_input_to_binary
 
 # Creates the parser object
 parser = argparse.ArgumentParser(
@@ -25,7 +26,7 @@ action = parser.add_subparsers(dest="action")
 # Test branch
 test = action.add_parser("test", help="Execute tests (located in test.py)")
 # Specification of which tests to run, all tests by default
-test.add_argument("-w", "--which", choices=["all", "tm", "utm", "uctm"], help="Choose which part of the project you want to test", default="all")
+test.add_argument("-w", "--which", choices=["all", "tm", "utm", "uctm", "2", "3", "4", "5", "6", "7", "8", "9", "10"], help="Choose which part of the project you want to test", default="all")
 
 
 # Run branch
@@ -39,6 +40,7 @@ run.add_argument("-of", "--output-format", choices=["normal", "pretty"], default
 # 
 run.add_argument("-b", "--bin", action="store_true", help="If set true, simulates the provided binary file using appropriate Universal Turing Machine and converts input to the right format. Crashes if not .utm.bin file is given as <file>.")
 
+run.add_argument("-c", "--counter", type=int, default=-1, help="If counter > 0 and bin is True, then uses a Universal Counter Turing Machine instead of Universal Turing Machine. This machine is limited to <counter> steps.")
 
 to_bin = action.add_parser("bin", help="Converts a standard Turing Machine file to a binary file")
 to_bin.add_argument("file", help="File containing Turing Machine description")
@@ -116,7 +118,7 @@ match args.action:
 
 			case "10":
 				pass
-				
+
 	# Execution branch
 	case "run":
 		# We ensure that file arg is a valid, existing file
@@ -135,11 +137,24 @@ match args.action:
 		if args.bin:
 			with open(args.file) as f:
 				states, alpha = map(int, f.readline().strip().split("|"))
-			name = f"./files/utm_states{states}_alpha{alpha}.utm"
+			if args.counter > 0:
+				name = f"./files/uctm_states{states}_alpha{alpha}.utm"
+				in_ = convert_input_to_binary(args.input, alphabet_bits=alpha)+'#'+'1'*args.counter
 
-			universal_machine = load_from_file(name, states_size=states, alpha_size=alpha)
+				print(f"Running {name} with {in_}")
 
-			universal_machine.load_and_run_binary(args.file, args.input, verbose=args.output_format == "pretty")
+				universal_machine = load_from_file(name, states_size=states, alpha_size=alpha)
+
+				universal_machine.load_and_run_binary(args.file, in_, verbose=args.output_format == "pretty", in_bin=True)
+			else:
+				name = f"./files/utm_states{states}_alpha{alpha}.utm"
+				in_ = args.input
+
+				print(f"Running {name} with {in_}")
+
+				universal_machine = load_from_file(name, states_size=states, alpha_size=alpha)
+
+				universal_machine.load_and_run_binary(args.file, in_, verbose=args.output_format == "pretty")
 		else:
 			machine = load_from_file(args.file)
 

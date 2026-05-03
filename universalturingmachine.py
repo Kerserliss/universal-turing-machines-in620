@@ -38,6 +38,7 @@ class UTM:
     def load_and_run_binary(self, filepath, input_, verbose=False, in_bin=False):
     	if not in_bin:
     		input_ = convert_input_to_binary(input_, alphabet_bits=self.alpha_bits)
+    
     	with open(filepath, 'r') as f:
     		f.readline()
     		code = f.read().strip()
