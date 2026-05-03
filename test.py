@@ -106,7 +106,8 @@ class TestTM:
 				assert config_test.under[1][0] == j
 
 		print ("Testing complete")
-
+	
+	@staticmethod
 	def move() :
 		print("Testing Moving") 
 		TM_test1 = p.load_from_file("./files/test_1tape.tm")
@@ -235,11 +236,11 @@ class TestTM:
 		config_test2,count = linearsearch_TM.run_count(config_init2,100)
 
 		assert config_test2.q != linearsearch_TM.accept and count == 100
-		print("Testing Compplete.")
+		print("Testing Complete.")
 
 	@staticmethod
 	def unarymultiplication():
-		print("Testing Turing Machine Unary Multiplicationh.")
+		print("Testing Turing Machine Unary Multiplication.")
 		unarymultiplication_TM = p.load_from_file("./files/unarymultiplication.tm")
 
 		#Testing with a good input - 11#111
@@ -250,7 +251,7 @@ class TestTM:
 		config_test2 = unarymultiplication_TM.run_start("10#11")
 
 		assert config_test2.q ==  -1
-		print("Testing Compplete.")
+		print("Testing Complete.")
 
 
 
@@ -259,15 +260,63 @@ class TestUniversalTM:
 	@staticmethod
 	def runall():
 		# TODO: executes all tests of this class
-		pass
+		TestUniversalTM.encode_transition()
+		TestUniversalTM.encode_binary()
+		TestUniversalTM.Universal_Machine()
+
+	@staticmethod
+	def encode_transition():
+		print("Testing Encode Transition.")
+		TM_test1 = p.load_from_file("./files/test_1tape.tm")
+		correct_binary1 = "0000|01|0000|01|>|0000|00|0000|00|>|0000|11|0001|11|-"
+		test_binary1 = p.encode_transitions(TM_test1)
+
+		assert correct_binary1 == test_binary1
+		print("Testing Complete")
+
+	@staticmethod
+	def encode_binary():
+		print("Testing Encode Binary")
+
+		# Test with the first machine with one tape.
+		correct_binary1 = "1000001000001110000000000001100001100011101"
+		test_binary1,test_int1 = p.encode_binary("./files/test_1tape.tm")
+
+		assert correct_binary1 == test_binary1 and int(correct_binary1,2) == test_int1
+		print("Testing Complete")
+
+	@staticmethod
+	def Universal_Machine():
+		print("Testing correct simulation with the Universal machine.")
+		# Testing with the machine one tape bis who transform 0 in 1 and 1 in 0.
+
+		test_1tape_binary = p.encode_binary("./files/test_1tape_bis.tm")[0]
+		UM = p.load_from_file("./files/utm_states4_alpha2.utm")
+		config_test1 = UM.run_code(test_1tape_binary,'000000')
+		TM_test1 = p.load_from_file("./files/test_1tape_bis.tm")
+		config1 = TM_test1.run_start("000")
+
+		assert "".join([config_test1.before[0][i] for i in range(len(config_test1.before[0])) if config_test1.before[0][i] != '_'])+"".join([config_test1.under[0][i] for i in range(len(config_test1.under[0])) if config_test1.under[0][i] != '_']) ==  test_1tape_binary[1:] 
+		assert "".join([config_test1.under[1][i] for i in range(1,5)]) == '0001' and "".join([config_test1.under[1][i] for i in range(5,7)]) == p.symbol_to_bin(config1.under[0][0])
+		assert "".join([config_test1.before[2][i] for i in range(len(config_test1.before[2])-2) if config_test1.before[2][i] != '_'])+"".join([config_test1.under[2][i] for i in range(len(config_test1.under[2])) if config_test1.under[2][i] != '_']) == "".join([p.symbol_to_bin(config1.before[0][i]) for i in range(len(config1.before[0])) if config1.before[0][i] != '_'])
+		print("Testing complete.")
+
 
 class TestUniversalCounterTM:
 	# TODO: test the Universal + Counter Turing Machine class
 	@staticmethod
 	def runall():
-		# TODO: executes all tests of this class
-		pass
+		TestUniversalCounterTM.Universal_Machine_Counter()
+
+	@staticmethod
+	def Universal_Machine_Counter():
+		print("Testing correct simulation with the Universal Machine Counter.")
+		
+		# Testing with the machine one tape bis who transform 0 in 1 and 1 in 0.
+		test_1tape_binary = p.encode_binary("./files/test_1tape_bis.tm")[0]
+
 if __name__ == '__main__':
 	TestTM.runall()
 	#tm_test = p.load_from_file("./files/linearsearch.tm")
 	#tm_test.run_print_start('1#01#10#00#1')
+	TestUniversalTM.runall()
